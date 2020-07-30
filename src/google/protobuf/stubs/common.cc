@@ -184,6 +184,7 @@ void NullLogHandler(LogLevel /* level */, const char* /* filename */,
 static LogHandler* log_handler_ = &DefaultLogHandler;
 static std::atomic<int> log_silencer_count_ = ATOMIC_VAR_INIT(0);
 
+#ifndef NDEBUG
 LogMessage& LogMessage::operator<<(const string& value) {
   message_ += value;
   return *this;
@@ -262,6 +263,8 @@ void LogMessage::Finish() {
 #endif
   }
 }
+
+#endif
 
 void LogFinisher::operator=(LogMessage& other) {
   other.Finish();

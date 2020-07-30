@@ -72,6 +72,32 @@ namespace internal {
 
 class LogFinisher;
 
+#ifdef NDEBUG
+class PROTOBUF_EXPORT LogMessage {
+ public:
+  LogMessage(LogLevel level, const char* filename, int line) {}
+  ~LogMessage() {}
+
+  LogMessage& operator<<(const std::string& value) { return *this; }
+  LogMessage& operator<<(const char* value) { return *this; }
+  LogMessage& operator<<(char value) { return *this; }
+  LogMessage& operator<<(int value) { return *this; }
+  LogMessage& operator<<(uint value) { return *this; }
+  LogMessage& operator<<(long value) { return *this; }
+  LogMessage& operator<<(unsigned long value) { return *this; }
+  LogMessage& operator<<(long long value) { return *this; }
+  LogMessage& operator<<(unsigned long long value) { return *this; }
+  LogMessage& operator<<(double value) { return *this; }
+  LogMessage& operator<<(void* value) { return *this; }
+  LogMessage& operator<<(const StringPiece& value) { return *this; }
+  LogMessage& operator<<(const util::Status& status) { return *this; }
+  LogMessage& operator<<(const uint128& value) { return *this; }
+
+ private:
+  friend class LogFinisher;
+  void Finish() {}
+};
+#else
 class PROTOBUF_EXPORT LogMessage {
  public:
   LogMessage(LogLevel level, const char* filename, int line);
@@ -101,6 +127,7 @@ class PROTOBUF_EXPORT LogMessage {
   int line_;
   std::string message_;
 };
+#endif
 
 // Used to make the entire "LOG(BLAH) << etc." expression have a void return
 // type and print a newline after each message.
